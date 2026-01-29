@@ -16,6 +16,7 @@ import 'services/auth_service.dart';
 import 'services/notification_service.dart';
 import 'services/cloudinary_service.dart';
 import 'services/blessing_storage_service.dart';
+import 'services/firestore_service.dart';
 
 // Routes
 import 'routes/app_routes.dart';
@@ -71,7 +72,28 @@ Future<void> _initServices() async {
 
   // Notification service
   await Get.put(NotificationService()).init();
+
+  // Firestore service (must be after auth)
+  await Get.put(FirestoreService()).init();
 }
+
+/// Get initial route based on app state
+String _getInitialRoute(bool isFirstLaunch) {
+  if (isFirstLaunch) {
+    return AppRoutes.languageSelection;
+  }
+
+  final authService = Get.find<AuthService>();
+  
+  // If user is signed in with Google, go directly to camera
+  if (authService.isGoogleUser) {
+    return AppRoutes.camera;
+  }
+  
+  // Otherwise show login screen
+  return AppRoutes.login;
+}
+
 
 class LensOfBlessingsApp extends StatelessWidget {
   const LensOfBlessingsApp({super.key});
@@ -94,10 +116,8 @@ class LensOfBlessingsApp extends StatelessWidget {
       locale: Locale(savedLanguage),
       fallbackLocale: const Locale('en'),
 
-      // Initial route based on first launch
-      initialRoute: isFirstLaunch
-          ? AppRoutes.languageSelection
-          : AppRoutes.camera,
+      // Initial route based on first launch and auth state
+      initialRoute: _getInitialRoute(isFirstLaunch),
 
       // Pages
       getPages: AppPages.pages,

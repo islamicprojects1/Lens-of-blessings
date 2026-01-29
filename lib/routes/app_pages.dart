@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'app_routes.dart';
+import '../presentation/screens/login_screen.dart';
 import '../presentation/screens/language_selection_screen.dart';
 import '../presentation/screens/camera_screen.dart';
 import '../presentation/screens/blessing_result_screen.dart';
@@ -11,6 +12,11 @@ import '../presentation/bindings/gallery_binding.dart';
 /// App pages configuration
 class AppPages {
   static final pages = [
+    GetPage(
+      name: AppRoutes.login,
+      page: () => const LoginScreen(),
+      transition: Transition.fadeIn,
+    ),
     GetPage(
       name: AppRoutes.languageSelection,
       page: () => const LanguageSelectionScreen(),
@@ -40,3 +46,4 @@ class AppPages {
     ),
   ];
 }
+

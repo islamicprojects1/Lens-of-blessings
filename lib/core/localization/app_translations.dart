@@ -64,6 +64,13 @@ class AppTranslations extends Translations {
     'fallback_1': 'The blessing of being present in this moment',
     'fallback_2': 'The blessing of being able to see and reflect',
     'fallback_3': 'The blessing of seeking beauty in life',
+
+    // Login
+    'login_subtitle': 'Save your blessings to the cloud',
+    'sign_in_with_google': 'Sign in with Google',
+    'continue_as_guest': 'Continue as Guest',
+    'google_sign_in_failed': 'Google Sign-In failed. Please try again.',
+    'error': 'Error',
   };
 
   static const Map<String, String> arTranslations = {
@@ -123,5 +130,12 @@ class AppTranslations extends Translations {
     'fallback_1': 'نعمة أن تكون موجوداً في هذه اللحظة',
     'fallback_2': 'نعمة القدرة على الرؤية والتأمل',
     'fallback_3': 'نعمة البحث عن الجمال في الحياة',
+
+    // Login
+    'login_subtitle': 'احفظ نعمك في السحابة',
+    'sign_in_with_google': 'تسجيل الدخول بقوقل',
+    'continue_as_guest': 'المتابعة كضيف',
+    'google_sign_in_failed': 'فشل تسجيل الدخول بقوقل. حاول مرة أخرى.',
+    'error': 'خطأ',
   };
 }
