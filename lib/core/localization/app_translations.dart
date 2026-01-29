@@ -21,7 +21,8 @@ class AppTranslations extends Translations {
     'add_note': 'What are you grateful for?',
     'add_note_hint': 'Optional: Share your thoughts...',
     'capture': 'Capture',
-    'gallery': 'Gallery',
+    'gallery': 'My Blessings',
+    'phone_gallery': 'Pick Image',
 
     // Blessing Result
     'your_blessings': 'Your Blessings',
@@ -51,6 +52,10 @@ class AppTranslations extends Translations {
     // Settings
     'settings': 'Settings',
     'language': 'Language',
+    'theme': 'Appearance',
+    'theme_system': 'System Default',
+    'theme_light': 'Light Mode',
+    'theme_dark': 'Dark Mode',
     'notifications': 'Daily Reminder',
     'about': 'About',
 
@@ -87,7 +92,8 @@ class AppTranslations extends Translations {
     'add_note': 'بماذا تشعر بالامتنان؟',
     'add_note_hint': 'اختياري: شاركنا أفكارك...',
     'capture': 'التقاط',
-    'gallery': 'معرض الصور',
+    'gallery': 'نِعمي',
+    'phone_gallery': 'رفع صورة',
 
     // Blessing Result
     'your_blessings': 'نِعَمُك',
@@ -117,6 +123,10 @@ class AppTranslations extends Translations {
     // Settings
     'settings': 'الإعدادات',
     'language': 'اللغة',
+    'theme': 'المظهر',
+    'theme_system': 'النظام الافتراضي',
+    'theme_light': 'الوضع الفاتح',
+    'theme_dark': 'الوضع الداكن',
     'notifications': 'التذكير اليومي',
     'about': 'عن التطبيق',
 

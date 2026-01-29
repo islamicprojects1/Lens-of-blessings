@@ -17,6 +17,8 @@ import 'services/notification_service.dart';
 import 'services/cloudinary_service.dart';
 import 'services/blessing_storage_service.dart';
 import 'services/firestore_service.dart';
+import 'presentation/controllers/theme_controller.dart';
+import 'presentation/controllers/language_controller.dart';
 
 // Routes
 import 'routes/app_routes.dart';
@@ -57,6 +59,10 @@ Future<void> _initServices() async {
   final storageService = await StorageService().init();
   Get.put(storageService);
 
+  // Theme & Language Controllers (needed by other services)
+  Get.put(ThemeController());
+  Get.put(LanguageController());
+
   // Blessing storage service (Hive)
   final blessingStorage = await BlessingStorageService().init();
   Get.put(blessingStorage);
@@ -84,16 +90,15 @@ String _getInitialRoute(bool isFirstLaunch) {
   }
 
   final authService = Get.find<AuthService>();
-  
+
   // If user is signed in with Google, go directly to camera
   if (authService.isGoogleUser) {
     return AppRoutes.camera;
   }
-  
+
   // Otherwise show login screen
   return AppRoutes.login;
 }
-
 
 class LensOfBlessingsApp extends StatelessWidget {
   const LensOfBlessingsApp({super.key});
@@ -104,37 +109,46 @@ class LensOfBlessingsApp extends StatelessWidget {
     final isFirstLaunch = storageService.isFirstLaunch();
     final savedLanguage = storageService.getLanguage();
 
-    return GetMaterialApp(
-      title: 'Lens of Blessings',
-      debugShowCheckedModeBanner: false,
+    final themeController = Get.find<ThemeController>();
+    final languageController = Get.find<LanguageController>();
 
-      // Theme
-      theme: AppTheme.lightTheme,
+    return Obx(() {
+      final lang = languageController.currentLanguage.value;
+      
+      return GetMaterialApp(
+        title: 'Lens of Blessings',
+        debugShowCheckedModeBanner: false,
 
-      // Localization
-      translations: AppTranslations(),
-      locale: Locale(savedLanguage),
-      fallbackLocale: const Locale('en'),
+        // Theme
+        themeMode: themeController.themeMode.value,
+        theme: AppTheme.getLightTheme(lang),
+        darkTheme: AppTheme.getDarkTheme(lang),
 
-      // Initial route based on first launch and auth state
-      initialRoute: _getInitialRoute(isFirstLaunch),
+        // Localization
+        translations: AppTranslations(),
+        locale: Locale(lang),
+        fallbackLocale: const Locale('en'),
 
-      // Pages
-      getPages: AppPages.pages,
+        // Initial route based on first launch and auth state
+        initialRoute: _getInitialRoute(isFirstLaunch),
 
-      // Default transition
-      defaultTransition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 300),
+        // Pages
+        getPages: AppPages.pages,
 
-      // Builder for text direction support
-      builder: (context, child) {
-        return Directionality(
-          textDirection: savedLanguage == 'ar'
-              ? TextDirection.rtl
-              : TextDirection.ltr,
-          child: child!,
-        );
-      },
-    );
+        // Default transition
+        defaultTransition: Transition.fadeIn,
+        transitionDuration: const Duration(milliseconds: 300),
+
+        // Builder for text direction support
+        builder: (context, child) {
+          return Directionality(
+            textDirection: lang == 'ar'
+                ? TextDirection.rtl
+                : TextDirection.ltr,
+            child: child!,
+          );
+        },
+      );
+    });
   }
 }

@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:share_plus/share_plus.dart';
 import '../controllers/gallery_controller.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/blessing_model.dart';
@@ -122,7 +124,16 @@ class _ReelItem extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         // Background Image
-        if (imagePath != null && File(imagePath).existsSync())
+        if (blessing.imageUrl != null)
+          CachedNetworkImage(
+            imageUrl: blessing.imageUrl!,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            ),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          )
+        else if (imagePath != null && File(imagePath).existsSync())
           Image.file(
             File(imagePath),
             fit: BoxFit.cover,
@@ -265,7 +276,10 @@ class _ReelItem extends StatelessWidget {
                         // Share button
                         IconButton(
                           onPressed: () {
-                            // TODO: Implement share
+                            final text = '${blessing.blessings.join('\n')}\n\n'
+                                '${blessing.imageUrl ?? ''}\n'
+                                'Shared via Lens of Blessings ✨';
+                            Share.share(text);
                           },
                           icon: Container(
                             padding: const EdgeInsets.all(10),

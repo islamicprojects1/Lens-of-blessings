@@ -1,17 +1,21 @@
+// VER: 2.0 - FIXING ASSIGNMENT
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../services/gemini_service.dart';
 import '../../services/storage_service.dart';
 import '../../routes/app_routes.dart';
+import 'language_controller.dart';
 
 /// Controller for Camera Screen
 class AppCameraController extends GetxController {
   final GeminiService _geminiService = Get.find<GeminiService>();
   final StorageService _storageService = Get.find<StorageService>();
+  final languageController = Get.find<LanguageController>();
 
   CameraController? cameraController;
   List<CameraDescription> cameras = [];
@@ -26,6 +30,7 @@ class AppCameraController extends GetxController {
   Uint8List? capturedImageBytes;
   String? capturedImagePath;
   List<String>? blessings;
+  String? aiRawResponse;
 
   @override
   void onInit() {
@@ -49,7 +54,6 @@ class AppCameraController extends GetxController {
         return;
       }
 
-      // Use back camera
       final camera = cameras.firstWhere(
         (c) => c.lensDirection == CameraLensDirection.back,
         orElse: () => cameras.first,
@@ -81,84 +85,114 @@ class AppCameraController extends GetxController {
     isCapturing.value = true;
 
     try {
-      // Capture image
       final XFile imageFile = await cameraController!.takePicture();
       
-      // Save to app directory
       final directory = await getApplicationDocumentsDirectory();
       final fileName = '${const Uuid().v4()}.jpg';
       final savedPath = '${directory.path}/blessings/$fileName';
       
-      // Create directory if needed
       await Directory('${directory.path}/blessings').create(recursive: true);
       
-      // Copy file
       final File savedFile = await File(imageFile.path).copy(savedPath);
       capturedImagePath = savedPath;
       capturedImageBytes = await savedFile.readAsBytes();
 
       isCapturing.value = false;
-      isAnalyzing.value = true;
-
       // Analyze with Gemini
-      final language = _storageService.getLanguage();
-      blessings = await _geminiService.analyzeImage(
-        imageBytes: capturedImageBytes!,
-        language: language,
-        userNote: userNote.value.isEmpty ? null : userNote.value,
-      );
+      await _analyzeCurrentImage();
 
-      // Navigate to result screen
       Get.toNamed(AppRoutes.blessingResult);
     } catch (e) {
-      print('CameraController Error: $e');
-      Get.snackbar(
-        'error'.tr,
-        'error_occurred'.tr,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      _handleError(e);
     } finally {
       isCapturing.value = false;
       isAnalyzing.value = false;
     }
   }
 
-  /// Update user note
+  /// Pick image from device gallery and analyze
+  Future<void> pickImageFromGallery() async {
+    if (isCapturing.value || isAnalyzing.value) return;
+
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? imageFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+      );
+
+      if (imageFile == null) return;
+
+      isAnalyzing.value = true;
+
+      // Save to app directory (consistent with capture flow)
+      final directory = await getApplicationDocumentsDirectory();
+      final fileName = '${const Uuid().v4()}.jpg';
+      final savedPath = '${directory.path}/blessings/$fileName';
+      await Directory('${directory.path}/blessings').create(recursive: true);
+      
+      final File savedFile = await File(imageFile.path).copy(savedPath);
+      capturedImagePath = savedPath;
+      capturedImageBytes = await savedFile.readAsBytes();
+
+      // Analyze
+      await _analyzeCurrentImage();
+      
+      Get.toNamed(AppRoutes.blessingResult);
+    } catch (e) {
+      _handleError(e);
+    } finally {
+      isAnalyzing.value = false;
+    }
+  }
+
+  /// Shared analysis logic
+  Future<void> _analyzeCurrentImage() async {
+    final language = languageController.currentLanguage.value;
+    final GeminiAnalysisResult result = await _geminiService.analyzeImage(
+      imageBytes: capturedImageBytes!,
+      language: language,
+      userNote: userNote.value.isEmpty ? null : userNote.value,
+    );
+
+    blessings = result.blessings;
+    aiRawResponse = result.rawResponse;
+  }
+
+  void _handleError(dynamic e) {
+    print('CameraController Error: $e');
+    Get.snackbar(
+      'error'.tr,
+      'error_occurred'.tr,
+      snackPosition: SnackPosition.BOTTOM,
+    );
+  }
+
   void setUserNote(String note) {
     userNote.value = note;
   }
 
-  /// Clear user note
   void clearUserNote() {
     userNote.value = '';
   }
 
-  /// Switch camera (front/back)
   Future<void> switchCamera() async {
     if (cameras.length < 2) return;
-
     try {
-      // Set loading state
       isInitialized.value = false;
-
       final currentDirection = cameraController?.description.lensDirection;
       final newCamera = cameras.firstWhere(
         (c) => c.lensDirection != currentDirection,
         orElse: () => cameras.first,
       );
-
       await cameraController?.dispose();
-      
       cameraController = CameraController(
         newCamera,
         ResolutionPreset.high,
         enableAudio: false,
         imageFormatGroup: ImageFormatGroup.jpeg,
       );
-
       await cameraController!.initialize();
-      
-      // Update UI
       isInitialized.value = true;
       update();
     } catch (e) {
@@ -168,27 +202,33 @@ class AppCameraController extends GetxController {
     }
   }
 
-  /// Toggle flash
   Future<void> toggleFlash() async {
     if (cameraController == null) return;
 
     final currentMode = cameraController!.value.flashMode;
-    final newMode = currentMode == FlashMode.off ? FlashMode.auto : FlashMode.off;
+    FlashMode newMode;
+
+    if (currentMode == FlashMode.off) {
+      newMode = FlashMode.always;
+    } else if (currentMode == FlashMode.always) {
+      newMode = FlashMode.auto;
+    } else {
+      newMode = FlashMode.off;
+    }
     
     await cameraController!.setFlashMode(newMode);
     update();
   }
 
-  /// Open gallery
   void openGallery() {
     Get.toNamed(AppRoutes.gallery);
   }
 
-  /// Reset state for new capture
   void resetState() {
     capturedImageBytes = null;
     capturedImagePath = null;
     blessings = null;
+    aiRawResponse = null;
     userNote.value = '';
     isCapturing.value = false;
     isAnalyzing.value = false;

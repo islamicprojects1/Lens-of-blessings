@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../widgets/blessing_card.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/blessing_model.dart';
@@ -42,19 +43,31 @@ class BlessingDetailScreen extends StatelessWidget {
               ),
             ),
             flexibleSpace: FlexibleSpaceBar(
-              background: imagePath != null && File(imagePath).existsSync()
-                  ? Image.file(
-                      File(imagePath),
+              background: blessing.imageUrl != null
+                  ? CachedNetworkImage(
+                      imageUrl: blessing.imageUrl!,
                       fit: BoxFit.cover,
-                    )
-                  : Container(
-                      color: AppColors.textMuted.withOpacity(0.1),
-                      child: const Icon(
-                        Icons.image_outlined,
-                        size: 64,
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(color: AppColors.primaryGreen),
+                      ),
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.image_not_supported_outlined,
                         color: AppColors.textMuted,
                       ),
-                    ),
+                    )
+                  : (imagePath != null && File(imagePath).existsSync()
+                      ? Image.file(
+                          File(imagePath),
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          color: AppColors.textMuted.withOpacity(0.1),
+                          child: const Icon(
+                            Icons.image_outlined,
+                            size: 64,
+                            color: AppColors.textMuted,
+                          ),
+                        )),
             ),
           ),
 
@@ -68,7 +81,7 @@ class BlessingDetailScreen extends StatelessWidget {
                   // Date
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.calendar_today_rounded,
                         size: 16,
                         color: AppColors.textMuted,
@@ -123,7 +136,7 @@ class BlessingDetailScreen extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.format_quote_rounded,
                             color: AppColors.accentGold,
                           ),
@@ -154,10 +167,7 @@ class BlessingDetailScreen extends StatelessWidget {
   }
 
   String _formatDate(DateTime date) {
-    final months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    return '${months[date.month - 1]} ${date.day}, ${date.year}';
+    // Simple localization-ready date
+    return '${date.day}/${date.month}/${date.year}';
   }
 }

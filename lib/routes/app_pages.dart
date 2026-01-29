@@ -8,6 +8,7 @@ import '../presentation/screens/gallery_screen.dart';
 import '../presentation/screens/blessing_detail_screen.dart';
 import '../presentation/bindings/camera_binding.dart';
 import '../presentation/bindings/gallery_binding.dart';
+import '../presentation/screens/settings_screen.dart';
 
 /// App pages configuration
 class AppPages {
@@ -42,6 +43,11 @@ class AppPages {
     GetPage(
       name: AppRoutes.blessingDetail,
       page: () => const BlessingDetailScreen(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: AppRoutes.settings,
+      page: () => const SettingsScreen(),
       transition: Transition.rightToLeft,
     ),
   ];

@@ -5,6 +5,8 @@ class Blessing {
   final List<String> blessings; // Always exactly 3
   final DateTime createdAt;
   final String? userNote;
+  final String? userId; // Owner ID in Firestore
+  final String? imageUrl; // Cloudinary URL
   final String language;
 
   Blessing({
@@ -13,6 +15,8 @@ class Blessing {
     required this.blessings,
     required this.createdAt,
     this.userNote,
+    this.userId,
+    this.imageUrl,
     required this.language,
   });
 
@@ -22,6 +26,8 @@ class Blessing {
     List<String>? blessings,
     DateTime? createdAt,
     String? userNote,
+    String? userId,
+    String? imageUrl,
     String? language,
   }) {
     return Blessing(
@@ -30,6 +36,8 @@ class Blessing {
       blessings: blessings ?? this.blessings,
       createdAt: createdAt ?? this.createdAt,
       userNote: userNote ?? this.userNote,
+      userId: userId ?? this.userId,
+      imageUrl: imageUrl ?? this.imageUrl,
       language: language ?? this.language,
     );
   }

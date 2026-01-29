@@ -1,24 +1,29 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-/// GeminiService - Optimized for gemini-2.5-flash based on user logs
+/// Result of image analysis
+class GeminiAnalysisResult {
+  final List<String> blessings;
+  final String? rawResponse;
+
+  GeminiAnalysisResult({required this.blessings, this.rawResponse});
+}
+
+/// GeminiService - Optimized for gemini-2.5-flash
 class GeminiService extends GetxService {
   static const String _baseUrl =
       'https://generativelanguage.googleapis.com/v1beta/models';
 
-  // القائمة مرتبة بناءً على النجاح السابق: 2.5 أولاً!
   final List<String> _modelsToTry = [
-    'gemini-2.5-flash', // هذا اشتغل سابقاً
+    'gemini-2.5-flash',
     'gemini-1.5-flash',
     'gemini-pro-vision',
   ];
 
-  /// Prompt template
   static const String _promptTemplate = '''
 Analyze this image and return exactly 3 short, meaningful blessings (5-15 words each).
 Be specific and genuine. Respond in {language}.
@@ -43,7 +48,7 @@ Return ONLY valid JSON:
     ],
   };
 
-  Future<List<String>> analyzeImage({
+  Future<GeminiAnalysisResult> analyzeImage({
     required Uint8List imageBytes,
     required String language,
     String? userNote,
@@ -51,12 +56,12 @@ Return ONLY valid JSON:
     final apiKey = dotenv.env['GEMINI_API_KEY'];
     if (apiKey == null || apiKey.isEmpty) {
       print('❌ GeminiService: API key is missing');
-      return getFallbackBlessings(language);
+      return GeminiAnalysisResult(blessings: getFallbackBlessings(language));
     }
 
     for (String model in _modelsToTry) {
       try {
-        print('� GeminiService: Trying model [$model]...');
+        print('🔎 GeminiService: Trying model [$model]...');
         final result = await _attemptAnalysis(
           model: model,
           imageBytes: imageBytes,
@@ -65,20 +70,20 @@ Return ONLY valid JSON:
           apiKey: apiKey,
         );
 
-        if (result != null && result.isNotEmpty) {
+        if (result != null) {
           print('✅ SUCCESS with model: $model');
           return result;
         }
       } catch (e) {
-        print('⚠️ Model [$model] failed.');
+        print('⚠️ Model [$model] failed: $e');
       }
     }
 
     print('❌ All models failed. Returning fallback.');
-    return getFallbackBlessings(language);
+    return GeminiAnalysisResult(blessings: getFallbackBlessings(language));
   }
 
-  Future<List<String>?> _attemptAnalysis({
+  Future<GeminiAnalysisResult?> _attemptAnalysis({
     required String model,
     required Uint8List imageBytes,
     required String language,
@@ -89,13 +94,12 @@ Return ONLY valid JSON:
     final base64Image = base64Encode(imageBytes);
     final prompt = _buildPrompt(language, userNote);
 
-    // التحقق مما إذا كان الموديل حديثاً ويدعم JSON mode
     final bool isModernModel =
         model.contains('1.5') || model.contains('2.0') || model.contains('2.5');
 
     final Map<String, dynamic> generationConfig = {
       "temperature": 0.7,
-      "maxOutputTokens": 2048, // زدنا الرقم جداً لمنع البتر
+      "maxOutputTokens": 2048,
     };
 
     if (isModernModel) {
@@ -131,25 +135,22 @@ Return ONLY valid JSON:
           jsonResponse['candidates'].isNotEmpty) {
         final text =
             jsonResponse['candidates'][0]['content']['parts'][0]['text'];
-
-        // استخدام debugPrint لرؤية النص كاملاً في الكونسول
+        
         debugPrint('📄 AI Response: $text');
 
-        return _parseResponse(text, language);
+        return GeminiAnalysisResult(
+          blessings: _parseResponse(text),
+          rawResponse: text,
+        );
       }
-    } else {
-      print('❌ [$model] Status: ${response.statusCode}');
-      // إذا فشل بسبب JSON mode، نجرب مرة أخيرة بدونه
-      if (response.statusCode == 400 && isModernModel) {
-        print('🔄 Retrying [$model] without JSON mode...');
-        return _attemptSimple(model, imageBytes, language, userNote, apiKey);
-      }
+    } else if (response.statusCode == 400 && isModernModel) {
+      print('🔄 Retrying [$model] without JSON mode...');
+      return _attemptSimple(model, imageBytes, language, userNote, apiKey);
     }
     return null;
   }
 
-  /// محاولة بسيطة بدون تعقيدات الإعدادات
-  Future<List<String>?> _attemptSimple(
+  Future<GeminiAnalysisResult?> _attemptSimple(
     String model,
     Uint8List imageBytes,
     String language,
@@ -182,7 +183,10 @@ Return ONLY valid JSON:
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
       final text = jsonResponse['candidates'][0]['content']['parts'][0]['text'];
-      return _parseResponse(text, language);
+      return GeminiAnalysisResult(
+        blessings: _parseResponse(text),
+        rawResponse: text,
+      );
     }
     return null;
   }
@@ -198,7 +202,7 @@ Return ONLY valid JSON:
         .replaceAll('{userContext}', userContext);
   }
 
-  List<String> _parseResponse(String text, String language) {
+  List<String> _parseResponse(String text) {
     try {
       String cleanedText = text.trim();
       if (cleanedText.contains('```')) {

@@ -11,6 +11,18 @@ class StorageService extends GetxService {
     return this;
   }
 
+  // ============== Theme ==============
+
+  /// Get saved theme mode (string: system, light, dark)
+  String getThemeMode() {
+    return _prefs.getString('theme_mode') ?? 'system';
+  }
+
+  /// Save theme mode
+  Future<void> setThemeMode(String mode) async {
+    await _prefs.setString('theme_mode', mode);
+  }
+
   // ============== Language ==============
 
   String getLanguage() {

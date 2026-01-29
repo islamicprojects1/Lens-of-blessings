@@ -70,7 +70,6 @@ class FirestoreService extends GetxService {
   /// Save blessing to Firestore
   Future<void> saveBlessing({
     required BlessingModel blessing,
-    required String imageUrl,
     String? aiRawResponse,
   }) async {
     try {
@@ -82,8 +81,7 @@ class FirestoreService extends GetxService {
 
       final data = {
         ...blessing.toJson(),
-        'userId': userId,
-        'imageUrl': imageUrl,
+        'userId': userId, // Ensure userId is set
         'aiRawResponse': aiRawResponse,
         'syncedAt': Timestamp.now(),
       };

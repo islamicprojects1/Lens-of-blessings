@@ -48,6 +48,29 @@ class AppTheme {
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
 
+      // Typography - Default System Font for English
+      textTheme: const TextTheme(
+        // Headlines
+        headlineLarge: TextStyle(fontWeight: FontWeight.bold),
+        headlineMedium: TextStyle(fontWeight: FontWeight.bold),
+        headlineSmall: TextStyle(fontWeight: FontWeight.bold),
+        
+        // Titles
+        titleLarge: TextStyle(fontWeight: FontWeight.w600),
+        titleMedium: TextStyle(fontWeight: FontWeight.w600),
+        titleSmall: TextStyle(fontWeight: FontWeight.w600),
+        
+        // Body
+        bodyLarge: TextStyle(fontWeight: FontWeight.normal),
+        bodyMedium: TextStyle(fontWeight: FontWeight.normal),
+        bodySmall: TextStyle(fontWeight: FontWeight.normal),
+        
+        // Labels
+        labelLarge: TextStyle(fontWeight: FontWeight.w600),
+        labelMedium: TextStyle(fontWeight: FontWeight.w500),
+        labelSmall: TextStyle(fontWeight: FontWeight.w500),
+      ),
+
       // Elevated Button
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -58,7 +81,10 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          textStyle: const TextStyle(
+            fontSize: 16, 
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
 
@@ -152,6 +178,98 @@ class AppTheme {
     );
   }
 
-  // TODO: Add dark theme later
-  // static ThemeData get darkTheme { ... }
+  static ThemeData getLightTheme(String languageCode) {
+    if (languageCode == 'ar') {
+      return lightTheme.copyWith(
+        textTheme: lightTheme.textTheme.apply(fontFamily: 'Tajawal'),
+        primaryTextTheme: lightTheme.primaryTextTheme.apply(fontFamily: 'Tajawal'),
+      );
+    }
+    return lightTheme;
+  }
+
+  static ThemeData getDarkTheme(String languageCode) {
+    if (languageCode == 'ar') {
+      return darkTheme.copyWith(
+        textTheme: darkTheme.textTheme.apply(fontFamily: 'Tajawal'),
+        primaryTextTheme: darkTheme.primaryTextTheme.apply(fontFamily: 'Tajawal'),
+      );
+    }
+    return darkTheme;
+  }
+
+  static ThemeData get darkTheme {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+
+      // Color Scheme
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: AppColors.primaryGreen,
+        brightness: Brightness.dark,
+        primary: AppColors.primaryGreen,
+        onPrimary: Colors.white,
+        secondary: AppColors.accentGold,
+        onSecondary: Colors.black,
+        surface: const Color(0xFF1E1E1E), // Dark grey
+        onSurface: Colors.white,
+        error: AppColors.error,
+      ),
+
+      // Scaffold
+      scaffoldBackgroundColor: const Color(0xFF121212), // Almost black
+
+      // AppBar
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+      ),
+
+      // Card
+      cardTheme: CardThemeData(
+        color: const Color(0xFF2C2C2C),
+        elevation: 2,
+        shadowColor: Colors.black.withOpacity(0.3),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+
+      // Typography - Default System Font for English (Inter removed)
+      textTheme: const TextTheme(
+        headlineLarge: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        headlineMedium: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        titleLarge: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+        bodyLarge: TextStyle(fontWeight: FontWeight.normal, color: Colors.white),
+        bodyMedium: TextStyle(fontWeight: FontWeight.normal, color: Colors.white70),
+      ),
+
+      // Elevated Button
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primaryGreen,
+          foregroundColor: Colors.white,
+          elevation: 2,
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+      ),
+      
+      // Bottom Navigation
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: Color(0xFF1E1E1E),
+        selectedItemColor: AppColors.primaryGreen,
+        unselectedItemColor: Colors.white54,
+        elevation: 8,
+        type: BottomNavigationBarType.fixed,
+      ),
+    );
+  }
 }

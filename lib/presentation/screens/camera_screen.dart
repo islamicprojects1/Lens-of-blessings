@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/camera_controller.dart';
 import '../../core/theme/app_colors.dart';
+import '../../routes/app_routes.dart';
 
 /// Camera Screen - Main screen of the app
 class CameraScreen extends StatelessWidget {
@@ -108,12 +109,19 @@ class _TopControls extends StatelessWidget {
             GetBuilder<AppCameraController>(
               builder: (ctrl) {
                 final flashMode = ctrl.cameraController?.value.flashMode;
+                IconData flashIcon;
+                if (flashMode == FlashMode.off) {
+                  flashIcon = Icons.flash_off_rounded;
+                } else if (flashMode == FlashMode.always) {
+                  flashIcon = Icons.flash_on_rounded;
+                } else {
+                  flashIcon = Icons.flash_auto_rounded;
+                }
+
                 return IconButton(
                   onPressed: controller.toggleFlash,
                   icon: Icon(
-                    flashMode == FlashMode.off
-                        ? Icons.flash_off_rounded
-                        : Icons.flash_auto_rounded,
+                    flashIcon,
                     color: Colors.white,
                     size: 28,
                   ),
@@ -135,14 +143,27 @@ class _TopControls extends StatelessWidget {
               ],
             ),
 
-            // Camera switch
-            IconButton(
-              onPressed: controller.switchCamera,
-              icon: const Icon(
-                Icons.flip_camera_ios_rounded,
-                color: Colors.white,
-                size: 28,
-              ),
+            // Camera switch & Settings
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  onPressed: controller.switchCamera,
+                  icon: const Icon(
+                    Icons.flip_camera_ios_rounded,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Get.toNamed(AppRoutes.settings),
+                  icon: const Icon(
+                    Icons.settings_rounded,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -227,8 +248,12 @@ class _BottomControls extends StatelessWidget {
                   onTap: controller.captureAndAnalyze,
                 ),
 
-                // Placeholder for symmetry
-                const SizedBox(width: 70),
+                // Device Gallery button
+                _ControlButton(
+                  icon: Icons.add_photo_alternate_rounded,
+                  label: 'phone_gallery'.tr,
+                  onTap: controller.pickImageFromGallery,
+                ),
               ],
             ),
 

@@ -8,6 +8,8 @@ class BlessingModel extends Blessing {
     required super.blessings,
     required super.createdAt,
     super.userNote,
+    super.userId,
+    super.imageUrl,
     required super.language,
   });
 
@@ -19,6 +21,8 @@ class BlessingModel extends Blessing {
       blessings: entity.blessings,
       createdAt: entity.createdAt,
       userNote: entity.userNote,
+      userId: entity.userId,
+      imageUrl: entity.imageUrl,
       language: entity.language,
     );
   }
@@ -31,6 +35,8 @@ class BlessingModel extends Blessing {
       blessings: List<String>.from(json['blessings'] as List),
       createdAt: DateTime.parse(json['createdAt'] as String),
       userNote: json['userNote'] as String?,
+      userId: json['userId'] as String?,
+      imageUrl: json['imageUrl'] as String?,
       language: json['language'] as String,
     );
   }
@@ -43,6 +49,8 @@ class BlessingModel extends Blessing {
       'blessings': blessings,
       'createdAt': createdAt.toIso8601String(),
       'userNote': userNote,
+      'userId': userId,
+      'imageUrl': imageUrl,
       'language': language,
     };
   }
@@ -54,6 +62,8 @@ class BlessingModel extends Blessing {
     List<String>? blessings,
     DateTime? createdAt,
     String? userNote,
+    String? userId,
+    String? imageUrl,
     String? language,
   }) {
     return BlessingModel(
@@ -62,6 +72,8 @@ class BlessingModel extends Blessing {
       blessings: blessings ?? this.blessings,
       createdAt: createdAt ?? this.createdAt,
       userNote: userNote ?? this.userNote,
+      userId: userId ?? this.userId,
+      imageUrl: imageUrl ?? this.imageUrl,
       language: language ?? this.language,
     );
   }

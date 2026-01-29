@@ -4,6 +4,9 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import '../core/constants/app_constants.dart';
 import 'storage_service.dart';
+import 'blessing_storage_service.dart';
+import '../presentation/controllers/language_controller.dart';
+import '../data/models/blessing_model.dart';
 
 /// NotificationService - Handles daily reminder notifications
 class NotificationService extends GetxService {
@@ -54,13 +57,40 @@ class NotificationService extends GetxService {
   Future<void> scheduleDailyReminder() async {
     await cancelDailyReminder();
 
-    final language = _storageService.getLanguage();
+    final language = Get.find<LanguageController>().currentLanguage.value;
+    final blessingStorage = Get.find<BlessingStorageService>();
+    
+    // Get random blessing if available
+    final allBlessings = blessingStorage.getAllBlessings();
+    String? randomBlessing;
+    String? imageUrl;
+    
+    if (allBlessings.isNotEmpty) {
+      allBlessings.shuffle();
+      final selected = allBlessings.first;
+      randomBlessing = selected.blessings.first;
+      imageUrl = selected.imageUrl;
+    }
+
     final title = language == 'ar'
-        ? 'حان وقت رؤية النعم ✨'
-        : 'Time to see blessings ✨';
-    final body = language == 'ar'
-        ? 'خذ لحظة لتلاحظ شيئاً جميلاً اليوم'
-        : 'Take a moment to notice something beautiful today';
+        ? (randomBlessing != null ? 'تذكير بنعمة ✨' : 'حان وقت رؤية النعم ✨')
+        : (randomBlessing != null
+              ? 'Blessing Reminder ✨'
+              : 'Time to see blessings ✨');
+
+    final body =
+        randomBlessing ??
+        (language == 'ar'
+            ? 'خذ لحظة لتلاحظ شيئاً جميلاً اليوم'
+            : 'Take a moment to notice something beautiful today');
+
+    StyleInformation? styleInformation;
+    if (randomBlessing != null) {
+      styleInformation = BigTextStyleInformation(body);
+      // Future improvement: Use BigPictureStyleInformation if imageUrl is local path
+    } else {
+      styleInformation = BigTextStyleInformation(body);
+    }
 
     final androidDetails = AndroidNotificationDetails(
       _channelId,
@@ -68,7 +98,7 @@ class NotificationService extends GetxService {
       channelDescription: 'Daily reminder to see blessings',
       importance: Importance.defaultImportance,
       priority: Priority.defaultPriority,
-      styleInformation: BigTextStyleInformation(body),
+      styleInformation: styleInformation,
     );
 
     const iosDetails = DarwinNotificationDetails(
