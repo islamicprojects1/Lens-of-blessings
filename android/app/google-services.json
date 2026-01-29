@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "114484576974",
+    "project_id": "lensofblessings",
+    "storage_bucket": "lensofblessings.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114484576974:android:7729b8576692b20ef0069f",
+        "android_client_info": {
+          "package_name": "com.example.lens_of_blessings"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbPKDJzuzobuyrgayxQNmT7v9-8nZBYBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
