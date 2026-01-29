@@ -114,7 +114,7 @@ class LensOfBlessingsApp extends StatelessWidget {
 
     return Obx(() {
       final lang = languageController.currentLanguage.value;
-      
+
       return GetMaterialApp(
         title: 'Lens of Blessings',
         debugShowCheckedModeBanner: false,
@@ -142,9 +142,7 @@ class LensOfBlessingsApp extends StatelessWidget {
         // Builder for text direction support
         builder: (context, child) {
           return Directionality(
-            textDirection: lang == 'ar'
-                ? TextDirection.rtl
-                : TextDirection.ltr,
+            textDirection: lang == 'ar' ? TextDirection.rtl : TextDirection.ltr,
             child: child!,
           );
         },
