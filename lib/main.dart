@@ -6,23 +6,23 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 // Core
-import 'core/theme/app_theme.dart';
-import 'core/localization/app_translations.dart';
+import 'package:lens_of_blessings/core/theme/app_theme.dart';
+import 'package:lens_of_blessings/core/localization/app_translations.dart';
 
 // Services
-import 'services/storage_service.dart';
-import 'services/gemini_service.dart';
-import 'services/auth_service.dart';
-import 'services/notification_service.dart';
-import 'services/cloudinary_service.dart';
-import 'services/blessing_storage_service.dart';
-import 'services/firestore_service.dart';
-import 'presentation/controllers/theme_controller.dart';
-import 'presentation/controllers/language_controller.dart';
+import 'package:lens_of_blessings/services/storage_service.dart';
+import 'package:lens_of_blessings/services/gemini_service.dart';
+import 'package:lens_of_blessings/services/auth_service.dart';
+import 'package:lens_of_blessings/services/notification_service.dart';
+import 'package:lens_of_blessings/services/cloudinary_service.dart';
+import 'package:lens_of_blessings/services/blessing_storage_service.dart';
+import 'package:lens_of_blessings/services/firestore_service.dart';
+import 'package:lens_of_blessings/features/settings/presentation/controllers/theme_controller.dart';
+import 'package:lens_of_blessings/features/settings/presentation/controllers/language_controller.dart';
 
 // Routes
-import 'routes/app_routes.dart';
-import 'routes/app_pages.dart';
+import 'package:lens_of_blessings/routes/app_routes.dart';
+import 'package:lens_of_blessings/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

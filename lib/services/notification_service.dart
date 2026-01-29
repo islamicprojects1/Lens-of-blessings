@@ -1,12 +1,11 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:lens_of_blessings/features/settings/presentation/controllers/language_controller.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
-import '../core/constants/app_constants.dart';
-import 'storage_service.dart';
-import 'blessing_storage_service.dart';
-import '../presentation/controllers/language_controller.dart';
-import '../data/models/blessing_model.dart';
+import 'package:lens_of_blessings/core/constants/app_constants.dart';
+import 'package:lens_of_blessings/services/storage_service.dart';
+import 'package:lens_of_blessings/services/blessing_storage_service.dart';
 
 /// NotificationService - Handles daily reminder notifications
 class NotificationService extends GetxService {
@@ -59,12 +58,12 @@ class NotificationService extends GetxService {
 
     final language = Get.find<LanguageController>().currentLanguage.value;
     final blessingStorage = Get.find<BlessingStorageService>();
-    
+
     // Get random blessing if available
     final allBlessings = blessingStorage.getAllBlessings();
     String? randomBlessing;
     String? imageUrl;
-    
+
     if (allBlessings.isNotEmpty) {
       allBlessings.shuffle();
       final selected = allBlessings.first;

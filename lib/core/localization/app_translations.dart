@@ -44,6 +44,7 @@ class AppTranslations extends Translations {
     'permission_denied': 'Permission denied',
     'camera_switch_failed': 'Failed to switch camera',
     'retry': 'Retry',
+    'please_wait': 'Please wait...',
 
     // Notifications
     'notification_title': 'Time to see blessings ✨',
@@ -58,6 +59,11 @@ class AppTranslations extends Translations {
     'theme_dark': 'Dark Mode',
     'notifications': 'Daily Reminder',
     'about': 'About',
+    'ai_model': 'AI Model',
+    'usage': 'Usage',
+    'remaining_requests': 'Remaining: {count}',
+    'model_exhausted': 'Model exhausted',
+    'select_ai_model': 'Select AI Model',
 
     // Delete
     'delete': 'Delete',
@@ -115,6 +121,7 @@ class AppTranslations extends Translations {
     'permission_denied': 'تم رفض الإذن',
     'camera_switch_failed': 'فشل تبديل الكاميرا',
     'retry': 'إعادة المحاولة',
+    'please_wait': 'يرجى الانتظار قليلاً...',
 
     // Notifications
     'notification_title': 'حان وقت رؤية النعم ✨',
@@ -129,6 +136,11 @@ class AppTranslations extends Translations {
     'theme_dark': 'الوضع الداكن',
     'notifications': 'التذكير اليومي',
     'about': 'عن التطبيق',
+    'ai_model': 'نموذج الذكاء الاصطناعي',
+    'usage': 'الاستخدام',
+    'remaining_requests': 'المتبقي: {count}',
+    'model_exhausted': 'تم استنفاد الطلبات',
+    'select_ai_model': 'اختر نموذج الذكاء الاصطناعي',
 
     // Delete
     'delete': 'حذف',

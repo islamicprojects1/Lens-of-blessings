@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:get/get.dart';
-import '../core/constants/api_constants.dart';
+import 'package:lens_of_blessings/core/constants/api_constants.dart';
 
 /// CloudinaryService - Handles image upload to cloud storage
 class CloudinaryService extends GetxService {

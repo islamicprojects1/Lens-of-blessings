@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import '../data/models/user_model.dart';
-import '../data/models/blessing_model.dart';
-import 'auth_service.dart';
+import 'package:lens_of_blessings/features/auth/data/models/user_model.dart';
+import 'package:lens_of_blessings/features/blessing/data/models/blessing_model.dart';
+import 'package:lens_of_blessings/services/auth_service.dart';
 
 /// FirestoreService - Handles cloud storage in Firebase Firestore
 class FirestoreService extends GetxService {
@@ -19,10 +19,10 @@ class FirestoreService extends GetxService {
   /// Initialize service
   Future<FirestoreService> init() async {
     _authService = Get.find<AuthService>();
-    
+
     // Link this service to AuthService
     _authService.setFirestoreService(this);
-    
+
     return this;
   }
 
@@ -31,10 +31,12 @@ class FirestoreService extends GetxService {
   /// Save user data to Firestore
   Future<void> saveUser(UserModel user) async {
     try {
-      await _usersCollection.doc(user.id).set(
-        user.toJson(),
-        SetOptions(merge: true), // Merge to preserve existing data
-      );
+      await _usersCollection
+          .doc(user.id)
+          .set(
+            user.toJson(),
+            SetOptions(merge: true), // Merge to preserve existing data
+          );
       print('FirestoreService: User saved: ${user.id}');
     } catch (e) {
       print('FirestoreService: Error saving user: $e');
@@ -114,7 +116,9 @@ class FirestoreService extends GetxService {
   }
 
   /// Get blessing by ID
-  Future<Map<String, dynamic>?> getBlessingWithDetails(String blessingId) async {
+  Future<Map<String, dynamic>?> getBlessingWithDetails(
+    String blessingId,
+  ) async {
     try {
       final doc = await _blessingsCollection.doc(blessingId).get();
       if (doc.exists) {

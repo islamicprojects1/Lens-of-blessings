@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../data/models/blessing_model.dart';
-import '../data/models/blessing_image_model.dart';
+import 'package:lens_of_blessings/features/blessing/data/models/blessing_model.dart';
+import 'package:lens_of_blessings/features/blessing/data/models/blessing_image_model.dart';
 
 /// BlessingStorageService - Handles local storage of blessings using Hive
 class BlessingStorageService extends GetxService {
@@ -29,7 +29,7 @@ class BlessingStorageService extends GetxService {
   /// Get all blessings
   List<BlessingModel> getAllBlessings() {
     final blessings = <BlessingModel>[];
-    
+
     for (final key in _blessingsBox.keys) {
       final json = _blessingsBox.get(key);
       if (json != null) {
@@ -50,7 +50,7 @@ class BlessingStorageService extends GetxService {
   BlessingModel? getBlessing(String id) {
     final json = _blessingsBox.get(id);
     if (json == null) return null;
-    
+
     try {
       return BlessingModel.fromJson(jsonDecode(json));
     } catch (e) {
@@ -78,7 +78,7 @@ class BlessingStorageService extends GetxService {
   BlessingImageModel? getImage(String id) {
     final json = _imagesBox.get(id);
     if (json == null) return null;
-    
+
     try {
       return BlessingImageModel.fromJson(jsonDecode(json));
     } catch (e) {

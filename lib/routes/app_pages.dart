@@ -1,14 +1,14 @@
 import 'package:get/get.dart';
-import 'app_routes.dart';
-import '../presentation/screens/login_screen.dart';
-import '../presentation/screens/language_selection_screen.dart';
-import '../presentation/screens/camera_screen.dart';
-import '../presentation/screens/blessing_result_screen.dart';
-import '../presentation/screens/gallery_screen.dart';
-import '../presentation/screens/blessing_detail_screen.dart';
-import '../presentation/bindings/camera_binding.dart';
-import '../presentation/bindings/gallery_binding.dart';
-import '../presentation/screens/settings_screen.dart';
+import 'package:lens_of_blessings/routes/app_routes.dart';
+import 'package:lens_of_blessings/features/auth/presentation/screens/login_screen.dart';
+import 'package:lens_of_blessings/features/settings/presentation/screens/language_selection_screen.dart';
+import 'package:lens_of_blessings/features/camera/presentation/screens/camera_screen.dart';
+import 'package:lens_of_blessings/features/blessing/presentation/screens/blessing_result_screen.dart';
+import 'package:lens_of_blessings/features/gallery/presentation/screens/gallery_screen.dart';
+import 'package:lens_of_blessings/features/blessing/presentation/screens/blessing_detail_screen.dart';
+import 'package:lens_of_blessings/features/camera/presentation/bindings/camera_binding.dart';
+import 'package:lens_of_blessings/features/gallery/presentation/bindings/gallery_binding.dart';
+import 'package:lens_of_blessings/features/settings/presentation/screens/settings_screen.dart';
 
 /// App pages configuration
 class AppPages {

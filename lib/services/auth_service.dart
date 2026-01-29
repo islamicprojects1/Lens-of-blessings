@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../data/models/user_model.dart';
-import 'storage_service.dart';
-import 'firestore_service.dart';
+import 'package:lens_of_blessings/features/auth/data/models/user_model.dart';
+import 'package:lens_of_blessings/services/storage_service.dart';
+import 'package:lens_of_blessings/services/firestore_service.dart';
 
 /// AuthService - Handles Firebase Authentication (Google + Anonymous)
 class AuthService extends GetxService {
@@ -91,7 +91,9 @@ class AuthService extends GetxService {
       // Sign in with the credential
       final userCredential = await _auth.signInWithCredential(credential);
 
-      print('AuthService: Google Sign-In successful: ${userCredential.user?.email}');
+      print(
+        'AuthService: Google Sign-In successful: ${userCredential.user?.email}',
+      );
 
       // Save user to Firestore
       await _saveUserToFirestore(userCredential.user!);
@@ -104,12 +106,17 @@ class AuthService extends GetxService {
   }
 
   /// Link anonymous account to Google
-  Future<UserCredential?> _linkAnonymousToGoogle(AuthCredential credential) async {
+  Future<UserCredential?> _linkAnonymousToGoogle(
+    AuthCredential credential,
+  ) async {
     try {
-      final userCredential =
-          await _auth.currentUser!.linkWithCredential(credential);
+      final userCredential = await _auth.currentUser!.linkWithCredential(
+        credential,
+      );
 
-      print('AuthService: Anonymous account linked to Google: ${userCredential.user?.email}');
+      print(
+        'AuthService: Anonymous account linked to Google: ${userCredential.user?.email}',
+      );
 
       // Save user to Firestore
       await _saveUserToFirestore(userCredential.user!);
