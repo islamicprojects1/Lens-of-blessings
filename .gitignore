@@ -1,3 +1,7 @@
+# Environment Variables (API Keys)
+.env
+.env.*
+
 # Miscellaneous
 *.class
 *.log
